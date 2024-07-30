@@ -45,15 +45,16 @@ userRouter.post("/login", async (req, res) => {
   const { email, password, role } = req.body;
   try {
     const user = await UserModel.findOne({ email });
+    // console.log(user.password)
     if (user) {
       bcrypt.compare(password, user.password, (err, result) => {
         if (err)
           res
             .status(500)
             .send({ msg: "error occured while comparing passwords" });
-        if (result) {
+        if (result && role == user.role) {
           const accessToken = jwt.sign({ ...user }, tokenSecretKey, {
-            expiresIn: "1d",
+            expiresIn: "1h",
           });
           const refreshToken = jwt.sign({ ...user }, refershTokenSecretKey, {
             expiresIn: "1d",
@@ -62,6 +63,7 @@ userRouter.post("/login", async (req, res) => {
             msg: "Login Successful",
             token: accessToken,
             refreshToken: refreshToken,
+            role: user.role,
           });
         } else {
           res.status(401).send({ msg: "Invalid Credentials" });
