@@ -96,7 +96,7 @@ userRouter.post("/login", async (req, res) => {
             role: user.role,
           });
         } else {
-          res.status(401).send({ msg: "Invalid Credentials" });
+          res.status(401).send({ msg: "Invalid Credentials (password / role)" });
         }
       });
     } else {
